@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Admin Dashboard - Pageant Voting Results</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 2em; background: #f7f7f7; }
+        h1 { color: #333; }
+        table { border-collapse: collapse; width: 100%; background: #fff; }
+        th, td { border: 1px solid #ccc; padding: 8px 12px; text-align: left; }
+        th { background: #eee; }
+        tr:nth-child(even) { background: #f2f2f2; }
+        .refresh-btn { margin-bottom: 1em; padding: 8px 16px; }
+    </style>
+</head>
+<body>
+    <h1>Admin Dashboard - Voting Results</h1>
+    <button class="refresh-btn" onclick="fetchResults()">Refresh</button>
+    <table id="results-table">
+        <thead>
+            <tr>
+                <th>Rank</th>
+                <th>Name</th>
+                <th>Faculty</th>
+                <th>Course</th>
+                <th>Gender</th>
+                <th>Votes</th>
+            </tr>
+        </thead>
+        <tbody>
+            <!-- Results will be inserted here -->
+        </tbody>
+    </table>
+    <script>
+        async function fetchResults() {
+            const res = await fetch('http://localhost:5000/api/results');
+            const data = await res.json();
+            const tbody = document.querySelector('#results-table tbody');
+            tbody.innerHTML = '';
+            data.forEach((c, i) => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${i + 1}</td>
+                    <td>${c.name}</td>
+                    <td>${c.faculty}</td>
+                    <td>${c.course}</td>
+                    <td>${c.gender.toUpperCase()}</td>
+                    <td>${c.votes}</td>
+                `;
+                tbody.appendChild(row);
+            });
+        }
+        fetchResults();
+        setInterval(fetchResults, 10000); // auto-refresh every 10s
+    </script>
+</body>
+</html>

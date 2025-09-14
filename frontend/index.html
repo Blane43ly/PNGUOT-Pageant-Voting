@@ -1,0 +1,754 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mr. & Ms. Unitech Voting</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+            color: #333;
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+            color: white;
+            padding: 20px;
+        }
+        
+        header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }
+        
+        header p {
+            font-size: 1.2rem;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        .tabs {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+        
+        .tab-button {
+            background-color: rgba(255, 255, 255, 0.2);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            margin: 0 10px;
+            border-radius: 30px;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .tab-button.active {
+            background-color: white;
+            color: #6a11cb;
+            font-weight: bold;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        }
+        
+        .content-section {
+            background-color: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+            margin-bottom: 30px;
+            min-height: 500px;
+        }
+        
+        .faculties-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+        
+        .faculty-card {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            border-radius: 10px;
+            padding: 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+        
+        .faculty-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+        }
+        
+        .faculty-card h3 {
+            color: #4a4a4a;
+            margin-bottom: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .contestants-section {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-top: 20px;
+        }
+        
+        .contestant-category {
+            background-color: #f8f9fa;
+            border-radius: 10px;
+            padding: 20px;
+        }
+        
+        .contestant-category h4 {
+            color: #4a4a4a;
+            margin-bottom: 15px;
+            text-align: center;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #6a11cb;
+        }
+        
+        .contestant-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+            gap: 15px;
+        }
+        
+        .contestant {
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .contestant img {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 3px solid #ddd;
+            transition: all 0.3s ease;
+        }
+        
+        .contestant.selected img {
+            border-color: #6a11cb;
+            box-shadow: 0 0 15px rgba(106, 17, 203, 0.5);
+        }
+        
+        .contestant p {
+            margin-top: 8px;
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+        
+        .vote-button {
+            display: block;
+            width: 200px;
+            margin: 30px auto 0;
+            padding: 15px;
+            background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+            color: white;
+            border: none;
+            border-radius: 30px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        }
+        
+        .vote-button:disabled {
+            background: #cccccc;
+            cursor: not-allowed;
+        }
+        
+        .vote-button:hover:not(:disabled) {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+        }
+        
+        .results-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        
+        .results-table th, .results-table td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+        
+        .results-table th {
+            background-color: #6a11cb;
+            color: white;
+        }
+        
+        .results-table tr:nth-child(even) {
+            background-color: #f8f9fa;
+        }
+        
+        .results-table tr:hover {
+            background-color: #e9ecef;
+        }
+        
+        .hidden {
+            display: none;
+        }
+        
+        .selected-contestants {
+            text-align: center;
+            margin-top: 20px;
+            padding: 15px;
+            background-color: #f8f9fa;
+            border-radius: 10px;
+        }
+        
+        .share-section {
+            text-align: center;
+            margin-top: 20px;
+            padding: 20px;
+            background-color: #f8f9fa;
+            border-radius: 10px;
+        }
+        
+        .share-button {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 12px 25px;
+            background: linear-gradient(135deg, #25d366 0%, #128c7e 100%);
+            color: white;
+            border: none;
+            border-radius: 30px;
+            font-size: 1rem;
+            cursor: pointer;
+            margin: 0 10px;
+            transition: all 0.3s ease;
+        }
+        
+        .share-button i {
+            margin-right: 8px;
+        }
+        
+        .share-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+        }
+        
+        .vote-status {
+            text-align: center;
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 10px;
+            background-color: #f8f9fa;
+        }
+        
+        .vote-success {
+            background-color: #d4edda;
+            color: #155724;
+        }
+        
+        .vote-error {
+            background-color: #f8d7da;
+            color: #721c24;
+        }
+        
+        @media (max-width: 768px) {
+            .faculties-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .contestants-section {
+                grid-template-columns: 1fr;
+            }
+            
+            .tab-button {
+                padding: 12px 20px;
+                font-size: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Mr. & Ms. Unitech Voting</h1>
+            <p>Cast your vote for your favorite contestants from each faculty. Select one Mr. and one Ms. contestant to vote.</p>
+        </header>
+        
+        <div class="tabs">
+            <button class="tab-button active" onclick="showTab('voting')">
+                <i class="fas fa-vote-yea"></i> Voting
+            </button>
+            <button class="tab-button" onclick="showTab('results')">
+                <i class="fas fa-chart-bar"></i> Results
+            </button>
+        </div>
+        
+        <!-- Voting Tab -->
+        <div id="voting" class="content-section">
+            <h2>Select Faculty</h2>
+            <div class="faculties-grid">
+                <div class="faculty-card" onclick="selectFaculty('sciences')">
+                    <h3>Faculty of Sciences <i class="fas fa-flask"></i></h3>
+                    <p>Mr. and Ms. Unitech contestants from Sciences</p>
+                </div>
+                
+                <div class="faculty-card" onclick="selectFaculty('engineering')">
+                    <h3>Faculty of Engineering <i class="fas fa-cogs"></i></h3>
+                    <p>Mr. and Ms. Unitech contestants from Engineering</p>
+                </div>
+                
+                <div class="faculty-card" onclick="selectFaculty('environment')">
+                    <h3>Built Environment <i class="fas fa-building"></i></h3>
+                    <p>Mr. and Ms. Unitech contestants from Built Environment</p>
+                </div>
+                
+                <div class="faculty-card" onclick="selectFaculty('humanities')">
+                    <h3>Faculty of Humanities <i class="fas fa-book"></i></h3>
+                    <p>Mr. and Ms. Unitech contestants from Humanities</p>
+                </div>
+                
+                <div class="faculty-card" onclick="selectFaculty('resources')">
+                    <h3>Natural Resources <i class="fas fa-leaf"></i></h3>
+                    <p>Mr. and Ms. Unitech contestants from Natural Resources</p>
+                </div>
+            </div>
+            
+            <div id="contestants-view" class="hidden">
+                <h2 id="faculty-title">Faculty Contestants</h2>
+                
+                <div class="contestants-section">
+                    <div class="contestant-category">
+                        <h4>Mr. Unitech Contestants</h4>
+                        <div id="mr-contestants" class="contestant-list">
+                            <!-- Male contestants will be loaded here -->
+                        </div>
+                    </div>
+                    
+                    <div class="contestant-category">
+                        <h4>Ms. Unitech Contestants</h4>
+                        <div id="ms-contestants" class="contestant-list">
+                            <!-- Female contestants will be loaded here -->
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="selected-contestants">
+                    <p id="selected-mr">Selected Mr.: None</p>
+                    <p id="selected-ms">Selected Ms.: None</p>
+                </div>
+                
+                <div id="vote-status" class="vote-status hidden"></div>
+                
+                <button id="vote-button" class="vote-button" disabled onclick="castVote()">
+                    Submit Vote <i class="fas fa-paper-plane"></i>
+                </button>
+            </div>
+            
+            <div class="share-section">
+                <h3>Share Voting Page</h3>
+                <p>Share this link with others to allow them to vote</p>
+                <div>
+                    <button class="share-button" onclick="shareLink()">
+                        <i class="fas fa-share-alt"></i> Share Link
+                    </button>
+                    <button class="share-button" onclick="copyLink()">
+                        <i class="fas fa-copy"></i> Copy Link
+                    </button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Results Tab -->
+        <div id="results" class="content-section hidden">
+            <h2>Live Results</h2>
+            <p>Real-time vote counts for Mr. and Ms. Unitech</p>
+            
+            <h3 style="margin-top: 30px;">Mr. Unitech</h3>
+            <table class="results-table">
+                <thead>
+                    <tr>
+                        <th>Rank</th>
+                        <th>Contestant</th>
+                        <th>Faculty</th>
+                        <th>Course</th>
+                        <th>Votes</th>
+                    </tr>
+                </thead>
+                <tbody id="mr-results">
+                    <!-- Mr. results will be loaded here -->
+                </tbody>
+            </table>
+            
+            <h3 style="margin-top: 30px;">Ms. Unitech</h3>
+            <table class="results-table">
+                <thead>
+                    <tr>
+                        <th>Rank</th>
+                        <th>Contestant</th>
+                        <th>Faculty</th>
+                        <th>Course</th>
+                        <th>Votes</th>
+                    </tr>
+                </thead>
+                <tbody id="ms-results">
+                    <!-- Ms. results will be loaded here -->
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <script>
+        // Contestant data from the uploaded file
+        const contestants = {
+            sciences: {
+                mr: [
+                    { id: 'sci-mr-1', name: 'Jack Laho', faculty: 'Sciences', course: 'BSCS-3', photo: 'https://randomuser.me/api/portraits/men/32.jpg', votes: 0 }
+                ],
+                ms: [
+                    { id: 'sci-ms-1', name: 'Calessah Mukekit', faculty: 'Sciences', course: 'BFTE-3', photo: 'https://randomuser.me/api/portraits/women/44.jpg', votes: 0 }
+                ]
+            },
+            engineering: {
+                mr: [
+                    { id: 'eng-mr-1', name: 'Moses Nathan', faculty: 'Engineering', course: 'BEME-4', photo: 'https://randomuser.me/api/portraits/men/22.jpg', votes: 0 }
+                ],
+                ms: [
+                    { id: 'eng-ms-1', name: 'Joy Iwais', faculty: 'Engineering', course: 'BEEL-4', photo: 'https://randomuser.me/api/portraits/women/22.jpg', votes: 0 }
+                ]
+            },
+            environment: {
+                mr: [
+                    { id: 'env-mr-1', name: 'Darius Yeou', faculty: 'Built Environment', course: 'BACM-3', photo: 'https://randomuser.me/api/portraits/men/12.jpg', votes: 0 }
+                ],
+                ms: [
+                    { id: 'env-ms-1', name: 'Linda Oa', faculty: 'Built Environment', course: 'BPST-1', photo: 'https://randomuser.me/api/portraits/women/12.jpg', votes: 0 }
+                ]
+            },
+            humanities: {
+                mr: [
+                    { id: 'hum-mr-1', name: 'Craig Posa', faculty: 'Humanities', course: 'BACD-2', photo: 'https://randomuser.me/api/portraits/men/15.jpg', votes: 0 }
+                ],
+                ms: [
+                    { id: 'hum-ms-1', name: 'Abigail Kaisi Uia', faculty: 'Humanities', course: 'BBAE-3', photo: 'https://randomuser.me/api/portraits/women/15.jpg', votes: 0 }
+                ]
+            },
+            resources: {
+                mr: [
+                    { id: 'res-mr-1', name: 'Joel Toi', faculty: 'Natural Resources', course: 'BSCF-3', photo: 'https://randomuser.me/api/portraits/men/25.jpg', votes: 0 }
+                ],
+                ms: [
+                    { id: 'res-ms-1', name: 'Georgina Roy', faculty: 'Natural Resources', course: 'BSAG-3', photo: 'https://randomuser.me/api/portraits/women/25.jpg', votes: 0 }
+                ]
+            }
+        };
+        
+        // Selected contestants
+        let selectedMr = null;
+        let selectedMs = null;
+        let currentFaculty = null;
+        
+        // Initialize votes from localStorage if available
+        function initializeVotes() {
+            const savedVotes = localStorage.getItem('unitechVotes');
+            if (savedVotes) {
+                const voteData = JSON.parse(savedVotes);
+                
+                // Update votes for each contestant
+                for (const faculty in voteData) {
+                    for (const gender in voteData[faculty]) {
+                        voteData[faculty][gender].forEach(contestant => {
+                            const foundContestant = contestants[faculty][gender].find(c => c.id === contestant.id);
+                            if (foundContestant) {
+                                foundContestant.votes = contestant.votes;
+                            }
+                        });
+                    }
+                }
+            }
+            
+            // Initialize voter tracking
+            if (!localStorage.getItem('voterTracking')) {
+                localStorage.setItem('voterTracking', JSON.stringify({}));
+            }
+        }
+        
+        // Save votes to localStorage
+        function saveVotes() {
+            localStorage.setItem('unitechVotes', JSON.stringify(contestants));
+        }
+        
+        // Track voter by IP (simulated with a random ID for demo purposes)
+        function trackVoter() {
+    let voterId = localStorage.getItem('voterId');
+    if (!voterId) {
+        voterId = 'voter-' + Math.random().toString(36).substr(2, 9);
+        localStorage.setItem('voterId', voterId);
+    }
+    return voterId;
+}
+        
+        // Check if voter has already voted
+        function hasVoted() {
+            const voterId = localStorage.getItem('voterId');
+            if (!voterId) return false;
+            
+            const tracking = JSON.parse(localStorage.getItem('voterTracking'));
+            return tracking[voterId] || false;
+        }
+        
+        // Show the selected tab
+        function showTab(tabName) {
+            // Hide all content sections
+            document.getElementById('voting').classList.add('hidden');
+            document.getElementById('results').classList.add('hidden');
+            
+            // Remove active class from all buttons
+            const buttons = document.querySelectorAll('.tab-button');
+            buttons.forEach(button => button.classList.remove('active'));
+            
+            // Show the selected tab and set button as active
+            document.getElementById(tabName).classList.remove('hidden');
+            event.currentTarget.classList.add('active');
+            
+            // If results tab, refresh results
+            if (tabName === 'results') {
+                updateResults();
+            }
+        }
+        
+        // Select a faculty to view its contestants
+        function selectFaculty(faculty) {
+            currentFaculty = faculty;
+            
+            // Update faculty title
+            const facultyTitles = {
+                sciences: "Faculty of Sciences",
+                engineering: "Faculty of Engineering",
+                environment: "Built Environment",
+                humanities: "Faculty of Humanities",
+                resources: "Natural Resources"
+            };
+            
+            document.getElementById('faculty-title').textContent = facultyTitles[faculty] + " Contestants";
+            
+            // Load Mr. contestants
+            const mrContainer = document.getElementById('mr-contestants');
+            mrContainer.innerHTML = '';
+            
+            contestants[faculty].mr.forEach(contestant => {
+                const contestantEl = document.createElement('div');
+                contestantEl.className = 'contestant';
+                contestantEl.innerHTML = `
+                    <img src="${contestant.photo}" alt="${contestant.name}">
+                    <p>${contestant.name}</p>
+                    <small>${contestant.course}</small>
+                `;
+                contestantEl.onclick = () => selectContestant(contestant, 'mr');
+                mrContainer.appendChild(contestantEl);
+            });
+            
+            // Load Ms. contestants
+            const msContainer = document.getElementById('ms-contestants');
+            msContainer.innerHTML = '';
+            
+            contestants[faculty].ms.forEach(contestant => {
+                const contestantEl = document.createElement('div');
+                contestantEl.className = 'contestant';
+                contestantEl.innerHTML = `
+                    <img src="${contestant.photo}" alt="${contestant.name}">
+                    <p>${contestant.name}</p>
+                    <small>${contestant.course}</small>
+                `;
+                contestantEl.onclick = () => selectContestant(contestant, 'ms');
+                msContainer.appendChild(contestantEl);
+            });
+            
+            // Show contestants view
+            document.getElementById('contestants-view').classList.remove('hidden');
+            
+            // Scroll to contestants view
+            document.getElementById('contestants-view').scrollIntoView({ behavior: 'smooth' });
+        }
+        
+        // Select a contestant
+        function selectContestant(contestant, category) {
+            // Clear previous selection for this category
+            const containers = document.querySelectorAll('.contestant');
+            containers.forEach(el => {
+                if (el.parentNode.id === `${category}-contestants`) {
+                    el.classList.remove('selected');
+                }
+            });
+            
+            // Mark the selected contestant
+            event.currentTarget.classList.add('selected');
+            
+            // Store selection
+            if (category === 'mr') {
+                selectedMr = contestant;
+                document.getElementById('selected-mr').textContent = `Selected Mr.: ${contestant.name}`;
+            } else {
+                selectedMs = contestant;
+                document.getElementById('selected-ms').textContent = `Selected Ms.: ${contestant.name}`;
+            }
+            
+            // Enable vote button if both are selected
+            if (selectedMr && selectedMs) {
+                document.getElementById('vote-button').disabled = false;
+            }
+        }
+        
+        // Cast a vote
+        async function castVote() {
+    // Ensure selections made
+    if (!selectedMr || !selectedMs) {
+        showVoteStatus('Please select both Mr. and Ms. contestants before voting.', 'error');
+        return;
+    }
+
+    const voterId = trackVoter(); // ensures voterId in localStorage
+
+    // Simple local check (frontend UX): if localStorage says voted, block
+    if (localStorage.getItem('hasVoted')) {
+        showVoteStatus('You have already voted. Each person can only vote once.', 'error');
+        return;
+    }
+
+    try {
+        const payload = {
+            voterId,
+            mrId: selectedMr.id,
+            msId: selectedMs.id
+        };
+
+        const resp = await fetch('http://localhost:5000/api/vote', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload)
+        });
+
+        const data = await resp.json();
+
+        if (resp.ok && data.success) {
+            // mark locally (so frontend UI disables)
+            localStorage.setItem('hasVoted', 'true');
+            showVoteStatus(`Vote successfully cast for ${selectedMr.name} and ${selectedMs.name}!`, 'success');
+
+            // reset UI selections
+            selectedMr = null;
+            selectedMs = null;
+            document.getElementById('selected-mr').textContent = 'Selected Mr.: None';
+            document.getElementById('selected-ms').textContent = 'Selected Ms.: None';
+            document.getElementById('vote-button').disabled = true;
+
+            // clear selection visuals
+            const selectedContestants = document.querySelectorAll('.contestant.selected');
+            selectedContestants.forEach(el => el.classList.remove('selected'));
+
+            // update results from server
+            updateResults();
+        } else {
+            // server returned an error (e.g., already voted)
+            showVoteStatus(data.error || 'Failed to submit vote', 'error');
+        }
+    } catch (err) {
+        console.error(err);
+        showVoteStatus('Server error. Could not submit vote.', 'error');
+    }
+}
+        
+        // Update results tables
+        async function updateResults() {
+    try {
+        const resp = await fetch('http://localhost:5000/api/results');
+        const results = await resp.json();
+
+        // Fill Mr and Ms tables
+        const mrTable = document.getElementById('mr-results');
+        const msTable = document.getElementById('ms-results');
+        mrTable.innerHTML = '';
+        msTable.innerHTML = '';
+
+        // Separate by gender and sort by votes desc (server already sorted)
+        const mr = results.filter(r => r.gender === 'mr');
+        const ms = results.filter(r => r.gender === 'ms');
+
+        mr.forEach((c, i) => {
+            const row = document.createElement('tr');
+            row.innerHTML = `<td>${i+1}</td><td>${c.name}</td><td>${c.faculty}</td><td>${c.course}</td><td>${c.votes}</td>`;
+            mrTable.appendChild(row);
+        });
+
+        ms.forEach((c, i) => {
+            const row = document.createElement('tr');
+            row.innerHTML = `<td>${i+1}</td><td>${c.name}</td><td>${c.faculty}</td><td>${c.course}</td><td>${c.votes}</td>`;
+            msTable.appendChild(row);
+        });
+    } catch (err) {
+        console.error('Failed to fetch results', err);
+    }
+}
+        
+        // Share voting link
+        function shareLink() {
+            if (navigator.share) {
+                navigator.share({
+                    title: 'Mr. & Ms. Unitech Voting',
+                    text: 'Vote for your favorite Mr. and Ms. Unitech contestants!',
+                    url: window.location.href
+                })
+                .then(() => console.log('Shared successfully'))
+                .catch(error => console.log('Error sharing:', error));
+            } else {
+                alert('Web Share API not supported in your browser. You can copy the link instead.');
+            }
+        }
+        
+        // Copy voting link
+        function copyLink() {
+            navigator.clipboard.writeText(window.location.href)
+                .then(() => alert('Link copied to clipboard!'))
+                .catch(err => {
+                    console.error('Could not copy text: ', err);
+                    alert('Failed to copy link. Please try again.');
+                });
+        }
+        
+        // Initialize the application
+        function init() {
+            initializeVotes();
+            updateResults();
+            
+            // Check if user has already voted
+            if (hasVoted()) {
+                showVoteStatus('You have already voted. Thank you for participating!', 'success');
+            }
+        }
+        
+        // Run initialization when page loads
+        window.onload = init;
+    </script>
+</body>
+</html>
