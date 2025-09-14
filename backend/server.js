@@ -75,20 +75,20 @@ app.post('/api/vote', async (req, res) => {
 // Get results
 app.get('/api/results', async (req, res) => {
     try {
-        // Aggregate votes for each contestant
+        // Get all votes from the database
         const votes = await Vote.find();
-        const counts = {};
 
-        // Initialize counts
+        // Initialize vote counts for each contestant
+        const counts = {};
         contestants.forEach(c => counts[c.id] = { ...c, votes: 0 });
 
-        // Count votes
+        // Tally votes
         votes.forEach(vote => {
             if (counts[vote.mrId]) counts[vote.mrId].votes += 1;
             if (counts[vote.msId]) counts[vote.msId].votes += 1;
         });
 
-        // Return as array, sorted by votes
+        // Return all contestants with their vote counts
         const results = Object.values(counts).sort((a, b) => b.votes - a.votes);
         res.json(results);
     } catch (err) {
