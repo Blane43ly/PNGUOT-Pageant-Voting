@@ -32,6 +32,25 @@ const contestantSchema = new mongoose.Schema({
 });
 const Contestant = mongoose.model('Contestant', contestantSchema);
 
+// Contestants data
+const contestants = [
+    // Sciences
+    { id: 'sci-mr-1', name: 'Jack Laho', faculty: 'Sciences', course: 'BSCS-3', gender: 'mr' },
+    { id: 'sci-ms-1', name: 'Calessah Mukekit', faculty: 'Sciences', course: 'BFTE-3', gender: 'ms' },
+    // Engineering
+    { id: 'eng-mr-1', name: 'Moses Nathan', faculty: 'Engineering', course: 'BEME-4', gender: 'mr' },
+    { id: 'eng-ms-1', name: 'Joy Iwais', faculty: 'Engineering', course: 'BEEL-4', gender: 'ms' },
+    // Built Environment
+    { id: 'env-mr-1', name: 'Darius Yeou', faculty: 'Built Environment', course: 'BACM-3', gender: 'mr' },
+    { id: 'env-ms-1', name: 'Linda Oa', faculty: 'Built Environment', course: 'BPST-1', gender: 'ms' },
+    // Humanities
+    { id: 'hum-mr-1', name: 'Craig Posa', faculty: 'Humanities', course: 'BACD-2', gender: 'mr' },
+    { id: 'hum-ms-1', name: 'Abigail Kaisi Uia', faculty: 'Humanities', course: 'BBAE-3', gender: 'ms' },
+    // Natural Resources
+    { id: 'res-mr-1', name: 'Joel Toi', faculty: 'Natural Resources', course: 'BSCF-3', gender: 'mr' },
+    { id: 'res-ms-1', name: 'Georgina Roy', faculty: 'Natural Resources', course: 'BSAG-3', gender: 'ms' }
+];
+
 // --- API Endpoints ---
 
 // Cast a vote
@@ -60,28 +79,8 @@ app.get('/api/results', async (req, res) => {
         const votes = await Vote.find();
         const counts = {};
 
-        // You should seed the contestants in DB or hardcode them here
-        // For demo, use the same contestants as in your frontend
-        const allContestants = [
-            // Sciences
-            { id: 'sci-mr-1', name: 'Jack Laho', faculty: 'Sciences', course: 'BSCS-3', gender: 'mr' },
-            { id: 'sci-ms-1', name: 'Calessah Mukekit', faculty: 'Sciences', course: 'BFTE-3', gender: 'ms' },
-            // Engineering
-            { id: 'eng-mr-1', name: 'Moses Nathan', faculty: 'Engineering', course: 'BEME-4', gender: 'mr' },
-            { id: 'eng-ms-1', name: 'Joy Iwais', faculty: 'Engineering', course: 'BEEL-4', gender: 'ms' },
-            // Built Environment
-            { id: 'env-mr-1', name: 'Darius Yeou', faculty: 'Built Environment', course: 'BACM-3', gender: 'mr' },
-            { id: 'env-ms-1', name: 'Linda Oa', faculty: 'Built Environment', course: 'BPST-1', gender: 'ms' },
-            // Humanities
-            { id: 'hum-mr-1', name: 'Craig Posa', faculty: 'Humanities', course: 'BACD-2', gender: 'mr' },
-            { id: 'hum-ms-1', name: 'Abigail Kaisi Uia', faculty: 'Humanities', course: 'BBAE-3', gender: 'ms' },
-            // Natural Resources
-            { id: 'res-mr-1', name: 'Joel Toi', faculty: 'Natural Resources', course: 'BSCF-3', gender: 'mr' },
-            { id: 'res-ms-1', name: 'Georgina Roy', faculty: 'Natural Resources', course: 'BSAG-3', gender: 'ms' }
-        ];
-
         // Initialize counts
-        allContestants.forEach(c => counts[c.id] = { ...c, votes: 0 });
+        contestants.forEach(c => counts[c.id] = { ...c, votes: 0 });
 
         // Count votes
         votes.forEach(vote => {
@@ -95,6 +94,11 @@ app.get('/api/results', async (req, res) => {
     } catch (err) {
         res.status(500).json({ error: 'Failed to fetch results' });
     }
+});
+
+// Get contestants
+app.get('/api/contestants', (req, res) => {
+    res.json(contestants);
 });
 
 // --- Admin panel ---
