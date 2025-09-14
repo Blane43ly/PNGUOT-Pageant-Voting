@@ -4,6 +4,8 @@ const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
 const basicAuth = require('express-basic-auth');
+const fs = require('fs');
+const path = require('path');
 
 const app = express();
 app.use(cors());
@@ -33,23 +35,7 @@ const contestantSchema = new mongoose.Schema({
 const Contestant = mongoose.model('Contestant', contestantSchema);
 
 // Contestants data
-const contestants = [
-    // Sciences
-    { id: 'sci-mr-1', name: 'Jack Laho', faculty: 'Sciences', course: 'BSCS-3', gender: 'mr' },
-    { id: 'sci-ms-1', name: 'Calessah Mukekit', faculty: 'Sciences', course: 'BFTE-3', gender: 'ms' },
-    // Engineering
-    { id: 'eng-mr-1', name: 'Moses Nathan', faculty: 'Engineering', course: 'BEME-4', gender: 'mr' },
-    { id: 'eng-ms-1', name: 'Joy Iwais', faculty: 'Engineering', course: 'BEEL-4', gender: 'ms' },
-    // Built Environment
-    { id: 'env-mr-1', name: 'Darius Yeou', faculty: 'Built Environment', course: 'BACM-3', gender: 'mr' },
-    { id: 'env-ms-1', name: 'Linda Oa', faculty: 'Built Environment', course: 'BPST-1', gender: 'ms' },
-    // Humanities
-    { id: 'hum-mr-1', name: 'Craig Posa', faculty: 'Humanities', course: 'BACD-2', gender: 'mr' },
-    { id: 'hum-ms-1', name: 'Abigail Kaisi Uia', faculty: 'Humanities', course: 'BBAE-3', gender: 'ms' },
-    // Natural Resources
-    { id: 'res-mr-1', name: 'Joel Toi', faculty: 'Natural Resources', course: 'BSCF-3', gender: 'mr' },
-    { id: 'res-ms-1', name: 'Georgina Roy', faculty: 'Natural Resources', course: 'BSAG-3', gender: 'ms' }
-];
+const contestants = JSON.parse(fs.readFileSync(path.join(__dirname, 'contestants.json')));
 
 // --- API Endpoints ---
 
@@ -75,22 +61,16 @@ app.post('/api/vote', async (req, res) => {
 // Get results
 app.get('/api/results', async (req, res) => {
     try {
-        // Get all votes from the database
         const votes = await Vote.find();
-
-        // Initialize vote counts for each contestant
         const counts = {};
         contestants.forEach(c => counts[c.id] = { ...c, votes: 0 });
 
-        // Tally votes
         votes.forEach(vote => {
             if (counts[vote.mrId]) counts[vote.mrId].votes += 1;
             if (counts[vote.msId]) counts[vote.msId].votes += 1;
         });
 
-        // Return all contestants with their vote counts
-        const results = Object.values(counts).sort((a, b) => b.votes - a.votes);
-        res.json(results);
+        res.json(Object.values(counts));
     } catch (err) {
         res.status(500).json({ error: 'Failed to fetch results' });
     }

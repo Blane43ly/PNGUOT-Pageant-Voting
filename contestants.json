@@ -1,0 +1,12 @@
+[
+    { "id": "sci-mr-1", "name": "Jack Laho", "faculty": "Sciences", "course": "BSCS-3", "gender": "mr" },
+    { "id": "sci-ms-1", "name": "Calessah Mukekit", "faculty": "Sciences", "course": "BFTE-3", "gender": "ms" },
+    { "id": "eng-mr-1", "name": "Moses Nathan", "faculty": "Engineering", "course": "BEME-4", "gender": "mr" },
+    { "id": "eng-ms-1", "name": "Joy Iwais", "faculty": "Engineering", "course": "BEEL-4", "gender": "ms" },
+    { "id": "env-mr-1", "name": "Darius Yeou", "faculty": "Built Environment", "course": "BACM-3", "gender": "mr" },
+    { "id": "env-ms-1", "name": "Linda Oa", "faculty": "Built Environment", "course": "BPST-1", "gender": "ms" },
+    { "id": "hum-mr-1", "name": "Craig Posa", "faculty": "Humanities", "course": "BACD-2", "gender": "mr" },
+    { "id": "hum-ms-1", "name": "Abigail Kaisi Uia", "faculty": "Humanities", "course": "BBAE-3", "gender": "ms" },
+    { "id": "res-mr-1", "name": "Joel Toi", "faculty": "Natural Resources", "course": "BSCF-3", "gender": "mr" },
+    { "id": "res-ms-1", "name": "Georgina Roy", "faculty": "Natural Resources", "course": "BSAG-3", "gender": "ms" }
+]
