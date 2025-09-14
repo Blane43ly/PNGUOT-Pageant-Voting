@@ -33,7 +33,7 @@
     </table>
     <script>
         async function fetchResults() {
-            const res = await fetch('http://localhost:5000/api/results');
+            const res = await fetch('https://pnguot-pageant-voting.onrender.com/api/results');
             const data = await res.json();
             const tbody = document.querySelector('#results-table tbody');
             tbody.innerHTML = '';
